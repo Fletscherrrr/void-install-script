@@ -618,7 +618,7 @@ install() {
                 echo -e "Installing NVIDIA graphics drivers... \n"
                 xbps-install -Sy -R $installRepo -r /mnt void-repo-nonfree || failureCheck
                 xmirror -s "$installRepo" -r /mnt || failureCheck
-                xbps-install -Sy -R $installRepo -r /mnt nvidia-dkms  || failureCheck
+                xbps-install -Sy -R $installRepo -r /mnt nvidia-dkms nvidia || failureCheck
                 echo -e "NVIDIA graphics drivers have been installed. \n"
                 ;;
 
@@ -640,7 +640,7 @@ install() {
                 echo -e "Installing NOUVEAU graphics drivers... \n"
                 xbps-install -Sy -R $installRepo -r /mnt void-repo-multilib || failureCheck
                 xmirror -s "$installRepo" -r /mnt || failureCheck
-                xbps-install -Sy -R $installRepo -r /mnt xf86-video-nouveau mesa-nouveau-dri mesa-nouveau-dri-32bit || failureCheck
+                xbps-install -Sy -R $installRepo -r /mnt xf86-video-nouveau mesa-dri mesa-dri-32bit || failureCheck
                 echo -e "AMD graphics drivers have been installed. \n"
                 ;;
 
