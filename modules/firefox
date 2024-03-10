@@ -1,0 +1,12 @@
+title=firefox
+description="- Install firefox"
+status=off
+
+main() {
+    commandFailure="Flatpak installation has failed."
+    echo -e "Installing firefox... \n"
+    xbps-install -Sy -R $installRepo -r /mnt firefox || failureCheck
+    echo -e "firefox has been installed. \n"
+
+    return 0
+}
