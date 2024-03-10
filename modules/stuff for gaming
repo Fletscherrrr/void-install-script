@@ -1,1 +1,14 @@
+title=stuff for gaming
+description="- If you want steam and lutris out of the box"
+status=off
 
+main() {
+    commandFailure="Flatpak installation has failed."
+    echo -e "Installing steam/lutris... \n"
+    xbps-install -Sy -R $installRepo -r /mnt void-repo-multilib void-repo-nonfree
+    xmirror -s "$installRepo" -r /mnt || failureCheck
+    xbps-install -Sy -R $installRepo -r /mnt steam lutris libgcc-32bit libstdc++-32bit libdrm-32bit libglvnd-32bit mono vulkan-loader vulkan-loader-32bit wine winetricks || failureCheck
+    echo -e "steam/lutris have been installed. \n"
+
+    return 0
+}
