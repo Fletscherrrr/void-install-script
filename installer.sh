@@ -201,9 +201,9 @@ installOptions() {
     if [ "$installType" == "desktop" ]; then
 
         if [ "$muslSelection" == "glibc" ]; then
-            graphicsChoice=$(drawDialog --title "Graphics Drivers" --menu "Both nvidia and nvidia-optimus include the proprietary official driver.\n\nChoose 'Skip' if you want to skip installing graphics drivers." 0 0 0 "intel" "" "amd" "" "nvidia" "" "nvidia-optimus" "" "nouveau" "")
+            graphicsChoice=$(drawDialog --title "Graphics Drivers" --menu "Both nvidia and nvidia-optimus include the proprietary official driver.\n\nChoose 'Skip' if you want to skip installing graphics drivers." 0 0 0 "intel" "" "amd" "" "nvidia" "" "nvidia-optimus" "")
         elif [ "$muslSelection" == "musl" ]; then
-            graphicsChoice=$(drawDialog --title "Graphics Drivers" --menu "Note that nvidia drivers are incompatible with musl.\n\nChoose 'Skip' if you want to skip installing graphics drivers." 0 0 0 "intel" "" "amd" "" "nouveau" "")
+            graphicsChoice=$(drawDialog --title "Graphics Drivers" --menu "Note that nvidia drivers are incompatible with musl.\n\nChoose 'Skip' if you want to skip installing graphics drivers." 0 0 0 "intel" "" "amd" "")
         fi
 
         if [ ! -z "$graphicsChoice" ]; then
@@ -610,38 +610,34 @@ install() {
 
             amd)
                 echo -e "Installing AMD graphics drivers... \n"
-                xbps-install -Sy -R $installRepo -r /mnt mesa-dri vulkan-loader mesa-vulkan-radeon mesa-vaapi mesa-vdpau || failureCheck
+                xbps-install -Sy -R $installRepo -r /mnt void-repo-multilib || failureCheck
+                xmirror -s "$installRepo" -r /mnt || failureCheck
+                xbps-install -Sy -R $installRepo -r /mnt mesa-dri mesa-dri-32bit vulkan-loader mesa-vulkan-radeon mesa-vaapi mesa-vdpau || failureCheck
                 echo -e "AMD graphics drivers have been installed. \n"
                 ;;
 
          nvidia)
                 echo -e "Installing NVIDIA graphics drivers... \n"
-                xbps-install -Sy -R $installRepo -r /mnt void-repo-nonfree || failureCheck
+                xbps-install -Sy -R $installRepo -r /mnt void-repo-nonfree void-repo-multilib-nonfree || failureCheck
                 xmirror -s "$installRepo" -r /mnt || failureCheck
-                xbps-install -Sy -R $installRepo -r /mnt nvidia-dkms nvidia || failureCheck
+                xbps-install -Sy -R $installRepo -r /mnt nvidia nvidia-dkms nvidia-libs nvidia-libs-32bit || failureCheck
                 echo -e "NVIDIA graphics drivers have been installed. \n"
                 ;;
 
           intel)
                 echo -e "Installing INTEL graphics drivers... \n"
-                xbps-install -Sy -R $installRepo -r /mnt mesa-dri vulkan-loader mesa-vulkan-intel intel-video-accel || failureCheck
+                xbps-install -Sy -R $installRepo -r /mnt void-repo-multilib || failureCheck
+                xmirror -s "$installRepo" -r /mnt || failureCheck
+                xbps-install -Sy -R $installRepo -r /mnt mesa-dri mesa-dri-32bit vulkan-loader mesa-vulkan-intel intel-video-accel || failureCheck
                 echo -e "INTEL graphics drivers have been installed. \n"
                 ;;
 
  nvidia-optimus)
                 echo -e "Installing INTEL and NVIDIA graphics drivers... \n"
-                xbps-install -Sy -R $installRepo -r /mnt void-repo-nonfree || failureCheck
+                xbps-install -Sy -R $installRepo -r /mnt void-repo-nonfree void-repo-multilib-nonfree || failureCheck
                 xmirror -s "$installRepo" -r /mnt || failureCheck
-                xbps-install -Sy -R $installRepo -r /mnt nvidia mesa-dri vulkan-loader mesa-vulkan-intel intel-video-accel || failureCheck
+                xbps-install -Sy -R $installRepo -r /mnt nvidia nvidia-dkms nvidia-libs nvidia-libs-32bit mesa-dri vulkan-loader mesa-vulkan-intel intel-video-accel || failureCheck
                 echo -e "INTEL and NVIDIA graphics drivers have been installed. \n"
-                ;;
-
-        nouveau)
-                echo -e "Installing NOUVEAU graphics drivers... \n"
-                xbps-install -Sy -R $installRepo -r /mnt void-repo-multilib || failureCheck
-                xmirror -s "$installRepo" -r /mnt || failureCheck
-                xbps-install -Sy -R $installRepo -r /mnt xf86-video-nouveau mesa-dri mesa-dri-32bit || failureCheck
-                echo -e "AMD graphics drivers have been installed. \n"
                 ;;
 
             *)
