@@ -1,0 +1,12 @@
+title=webfonts
+description="- Fonts for better browsing experience"
+status=off
+
+main() {
+    commandFailure="Flatpak installation has failed."
+    echo -e "Installing webfonts... \n"
+    xbps-install -Sy -R $installRepo -r /mnt google-fonts-ttf freefont-ttf || failureCheck
+    echo -e "webfonts has been installed. \n"
+
+    return 0
+}
