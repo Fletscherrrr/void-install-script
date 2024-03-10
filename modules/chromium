@@ -1,0 +1,12 @@
+title=chromium
+description="- Install chromium"
+status=off
+
+main() {
+    commandFailure="Flatpak installation has failed."
+    echo -e "Installing chromium... \n"
+    xbps-install -Sy -R $installRepo -r /mnt chromium || failureCheck
+    echo -e "chromium has been installed. \n"
+
+    return 0
+}
