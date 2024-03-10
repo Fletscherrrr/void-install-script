@@ -449,7 +449,7 @@ install() {
     commandFailure="Base system installation has failed."
 
     if [ $baseChoice == "base-container" ]; then
-        XBPS_ARCH=$ARCH xbps-install -Sy -R $installRepo -r /mnt base-container $kernelChoice dosfstools ncurses libgcc bash file less man-pages mdocml pciutils usbutils dhcpcd kbd iproute2 iputils ethtool kmod acpid eudev lvm2 void-artwork || failureCheck
+        XBPS_ARCH=$ARCH xbps-install -Sy -R $installRepo -r /mnt base-container $kernelChoice dosfstools ncurses libgcc bash bash-completion file less man-pages mdocml pciutils usbutils dhcpcd kbd iproute2 iputils ethtool kmod acpid eudev lvm2 void-artwork || failureCheck
 
         case $fsChoice in
 
@@ -467,7 +467,7 @@ install() {
 
         esac
     elif [ $baseChoice == "base-system" ]; then
-        XBPS_ARCH=$ARCH xbps-install -Sy -R $installRepo -r /mnt base-system lvm2 || failureCheck
+        XBPS_ARCH=$ARCH xbps-install -Sy -R $installRepo -r /mnt base-system bash-completion lvm2 || failureCheck
 
         # Ignore some packages provided by base-system and remove them to provide a choice.
         if [ $kernelChoice != "linux" ]; then
