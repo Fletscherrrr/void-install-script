@@ -201,7 +201,7 @@ installOptions() {
     if [ "$installType" == "desktop" ]; then
 
         if [ "$muslSelection" == "glibc" ]; then
-            graphicsChoice=$(drawDialog --title "Graphics Drivers" --menu "Both nvidia and nvidia-optimus include the proprietary official driver.\n\nChoose 'Skip' if you want to skip installing graphics drivers." 0 0 0 "intel" "" "amd" "" "nvidia" "" "nvidia-optimus" "")
+            graphicsChoice=$(drawDialog --title "Graphics Drivers" --menu "Both nvidia and nvidia-optimus include the proprietary official driver.\n\nChoose 'Skip' if you want to skip installing graphics drivers." 0 0 0 "intel" "" "amd" "" "nvidia" "" "nvidia-optimus" "" "nouveau" "")
         elif [ "$muslSelection" == "musl" ]; then
             graphicsChoice=$(drawDialog --title "Graphics Drivers" --menu "Note that nvidia drivers are incompatible with musl.\n\nChoose 'Skip' if you want to skip installing graphics drivers." 0 0 0 "intel" "" "amd" "")
         fi
@@ -449,7 +449,7 @@ install() {
     commandFailure="Base system installation has failed."
 
     if [ $baseChoice == "base-container" ]; then
-        XBPS_ARCH=$ARCH xbps-install -Sy -R $installRepo -r /mnt base-container $kernelChoice dosfstools ncurses libgcc bash bash-completion file less man-pages mdocml pciutils usbutils dhcpcd kbd iproute2 iputils ethtool kmod acpid eudev lvm2 void-artwork || failureCheck
+        XBPS_ARCH=$ARCH xbps-install -Sy -R $installRepo -r /mnt base-container $kernelChoice dosfstools ncurses libgcc bash bash-completion file tldr less man-pages void-repo-nonfree void-repo-multilib-nonfree mdocml pciutils usbutils dhcpcd kbd iproute2 iputils ethtool kmod acpid eudev lvm2 void-artwork || failureCheck
 
         case $fsChoice in
 
@@ -620,7 +620,15 @@ install() {
                 echo -e "Installing NVIDIA graphics drivers... \n"
                 xbps-install -Sy -R $installRepo -r /mnt void-repo-nonfree void-repo-multilib-nonfree || failureCheck
                 xmirror -s "$installRepo" -r /mnt || failureCheck
-                xbps-install -Sy -R $installRepo -r /mnt nvidia nvidia-dkms nvidia-libs nvidia-libs-32bit || failureCheck
+                xbps-install -Sy -R $installRepo -r /mnt nvidia-dkms nvidia-libs nvidia-libs-32bit || failureCheck
+                echo -e "NVIDIA graphics drivers have been installed. \n"
+                ;;
+
+         nouveau)
+                echo -e "Installing nouveau graphics drivers... \n"
+                xbps-install -Sy -R $installRepo -r /mnt void-repo-nonfree void-repo-multilib-nonfree || failureCheck
+                xmirror -s "$installRepo" -r /mnt || failureCheck
+                xbps-install -Sy -R $installRepo -r /mnt mesa-dri xf86-video-nouveau || failureCheck
                 echo -e "NVIDIA graphics drivers have been installed. \n"
                 ;;
 
@@ -636,7 +644,7 @@ install() {
                 echo -e "Installing INTEL and NVIDIA graphics drivers... \n"
                 xbps-install -Sy -R $installRepo -r /mnt void-repo-nonfree void-repo-multilib-nonfree || failureCheck
                 xmirror -s "$installRepo" -r /mnt || failureCheck
-                xbps-install -Sy -R $installRepo -r /mnt nvidia nvidia-dkms nvidia-libs nvidia-libs-32bit mesa-dri vulkan-loader mesa-vulkan-intel intel-video-accel || failureCheck
+                xbps-install -Sy -R $installRepo -r /mnt nvidia-dkms nvidia-libs nvidia-libs-32bit mesa-dri vulkan-loader mesa-vulkan-intel intel-video-accel || failureCheck
                 echo -e "INTEL and NVIDIA graphics drivers have been installed. \n"
                 ;;
 
