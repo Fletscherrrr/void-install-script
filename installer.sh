@@ -214,9 +214,13 @@ installOptions() {
 
         audioChoice=$(drawDialog --title "Audio Server" --menu "If you are unsure, 'pipewire' is recommended.\n\nChoose 'Skip' if you want to skip." 0 0 0 "pipewire" "" "pulseaudio" "")
 
-        desktopChoice=$(drawDialog --title "Desktop Environment" --menu "Choose 'Skip' if you want to skip." 0 0 0 "gnome" "" "kde" "" "xfce" "" "sway" "" "swayfx" "" "wayfire" "" "i3" "")
+        desktopChoice=$(drawDialog --title "Desktop Environment" --menu "Choose 'Skip' if you want to skip." 0 0 0 "gnome" "" "kde" "" "xfce" "" "awesome" "" "sway" "" "swayfx" "" "wayfire" "" "i3" "")
 
         case $desktopChoice in
+            awesome)
+                drawDialog --msgbox "awesome will have to be started manually on login. This can be done by entering 'dbus-run-session sway' after logging in on the new installation." 0 0
+		;;
+  
             sway)
                 drawDialog --msgbox "Sway will have to be started manually on login. This can be done by entering 'dbus-run-session sway' after logging in on the new installation." 0 0
 		;;
@@ -449,7 +453,7 @@ install() {
     commandFailure="Base system installation has failed."
 
     if [ $baseChoice == "base-container" ]; then
-        XBPS_ARCH=$ARCH xbps-install -Sy -R $installRepo -r /mnt base-container $kernelChoice dosfstools ncurses libgcc bash bash-completion file tldr less man-pages void-repo-nonfree void-repo-multilib-nonfree mdocml pciutils usbutils dhcpcd kbd iproute2 iputils ethtool kmod acpid eudev lvm2 void-artwork || failureCheck
+        XBPS_ARCH=$ARCH xbps-install -Sy -R $installRepo -r /mnt base-container $kernelChoice dosfstools ncurses libgcc bash dbus bash-completion file tldr less man-pages void-repo-nonfree void-repo-multilib-nonfree mdocml pciutils usbutils dhcpcd kbd iproute2 iputils ethtool kmod acpid eudev lvm2 void-artwork || failureCheck
 
         case $fsChoice in
 
@@ -705,6 +709,12 @@ install() {
                 chroot /mnt /bin/bash -c "ln -s /etc/sv/lightdm /var/service" || failureCheck
                 echo -e "XFCE has been installed. \n"
                 ;;
+
+        awesome)
+                echo -e "Installing awesome... \n"
+                xbps-install -Sy -R $installRepo -r /mnt xorg-minimal xinit xterm awesome xorg-fonts xorg-video-drivers || failureCheck
+                echo -e "awesome has been installed. \n"
+		;;
 
             sway)
                 echo -e "Installing Sway window manager... \n"
